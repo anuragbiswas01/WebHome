@@ -53,6 +53,21 @@ export function AuthProvider({ children }) {
           } catch (e) {
             console.warn("Failed to cache auth user:", e);
           }
+
+          // Broadcast session to WebHome Chrome Extension bridge
+          currentUser.getIdToken().then((token) => {
+            window.postMessage(
+              {
+                type: "WEBHOME_AUTH_SYNC",
+                userUid: currentUser.uid,
+                userEmail: currentUser.email,
+                firebaseApiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+                firebaseProjectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+                idToken: token,
+              },
+              "*"
+            );
+          }).catch(() => {});
         } else {
           setUser(null);
           try {

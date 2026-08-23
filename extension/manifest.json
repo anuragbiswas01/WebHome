@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "WebHome Bookmark Auto-Sync",
+  "version": "1.0.0",
+  "description": "Automatically syncs your native Chrome/Edge bookmarks with your WebHome dashboard in real-time with AES-256 encryption.",
+  "permissions": [
+    "bookmarks",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://*.firebaseio.com/*",
+    "https://*.googleapis.com/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "WebHome Auto-Sync"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://localhost/*",
+        "http://127.0.0.1/*",
+        "https://*/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

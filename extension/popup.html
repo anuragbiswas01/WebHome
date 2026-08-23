@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebHome Auto-Sync</title>
+  <style>
+    :root {
+      --bg: #121216;
+      --card: #1c1c24;
+      --input: #272732;
+      --primary: #f97316;
+      --primary-hover: #ea580c;
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --border: #2e2e3d;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      width: 320px;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      overflow: hidden;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+    }
+    .logo-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .status-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-connected {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-disconnected {
+      background: rgba(161, 161, 170, 0.15);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .status-syncing {
+      background: rgba(249, 115, 22, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .stat-val {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+    .btn-secondary {
+      background: var(--input);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: #323242;
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .info-text {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+      text-align: center;
+      margin-top: 4px;
+    }
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo-box">
+      <div class="logo-icon">W</div>
+      <div class="logo-title">WebHome Sync</div>
+    </div>
+    <div id="statusBadge" class="status-badge status-disconnected">
+      <span class="dot"></span>
+      <span id="statusText">Connecting...</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="stat-row">
+      <span class="stat-label">Browser Bookmarks:</span>
+      <span id="bookmarkCount" class="stat-val">Loading...</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Encrypted Sync:</span>
+      <span class="stat-val" style="color: var(--success);">🔒 AES-256-GCM</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Account:</span>
+      <span id="accountEmail" class="stat-val truncate" style="max-width: 140px;">Waiting for WebHome</span>
+    </div>
+    <div class="stat-row" style="margin-bottom: 0;">
+      <span class="stat-label">Last Synced:</span>
+      <span id="lastSynced" class="stat-val text-xs">Never</span>
+    </div>
+
+    <div class="toggle-group">
+      <span>Auto-Sync Bookmark Changes</span>
+      <input type="checkbox" id="autoSyncCheckbox" checked />
+    </div>
+  </div>
+
+  <button id="syncNowBtn" class="btn btn-primary">
+    🔄 Sync Browser Bookmarks Now
+  </button>
+
+  <button id="openWebHomeBtn" class="btn btn-secondary">
+    🌐 Open WebHome Dashboard
+  </button>
+
+  <div class="info-text">
+    Open your WebHome tab to auto-connect your session securely.
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
