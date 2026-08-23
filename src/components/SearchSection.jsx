@@ -5,10 +5,6 @@ import { QuickLinks } from './QuickLinks';
 export function SearchSection({
     searchTerm,
     setSearchTerm,
-    activeFilter,
-    setActiveFilter,
-    folders,
-    bookmarksCount,
     selectedEngineId,
     setSelectedEngineId,
     hasWallpaper,

@@ -67,7 +67,7 @@ export function BookmarkGrid({
                             onClick={() => toggleFolder(folder)}
                         >
                             <div className="flex items-center gap-2">
-                                <div className={`transition-transform duration-200 ${expandedFolders[folder] ? 'rotate-0' : '-rotate-90'}`}>
+                                <div className={`transition-transform duration-200 ${expandedFolders[folder] !== false ? 'rotate-0' : '-rotate-90'}`}>
                                     <ChevronDown className="w-4 h-4 text-text-muted" />
                                 </div>
                                 <h2 className="text-base lg:text-lg font-semibold text-text-primary">{folder}</h2>
@@ -113,7 +113,7 @@ export function BookmarkGrid({
                             </div>
                         </div>
 
-                        {expandedFolders[folder] && (
+                        {expandedFolders[folder] !== false && (
                             <div className={`animate-in fade-in slide-in-from-top-1 duration-200 ${currentView === 'grid'
                                 ? "grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3"
                                 : "flex flex-col gap-2"

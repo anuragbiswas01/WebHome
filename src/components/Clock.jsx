@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export function Clock({ theme, hasWallpaper }) {
+export function Clock({ hasWallpaper }) {
     const [time, setTime] = useState(new Date());
 
     useEffect(() => {
@@ -18,9 +18,6 @@ export function Clock({ theme, hasWallpaper }) {
         return date.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
     };
 
-    // Determine text color class based on context
-    // If wallpaper is active, use white text with drop shadow for readability
-    // If no wallpaper, use standard text color
     const textColorClass = hasWallpaper ? 'text-white drop-shadow-lg' : 'text-text-primary';
 
     return (

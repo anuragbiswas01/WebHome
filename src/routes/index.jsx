@@ -2,16 +2,13 @@ import { Settings, Image } from 'lucide-react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
 import { useTheme } from '../hooks/useTheme';
-import { useBookmarks, parseBookmarkHTML, generateBookmarkHTML } from '../hooks/useBookmarks';
+import { useBookmarks, parseBookmarkHTML } from '../hooks/useBookmarks';
 import { useSearchEngines } from '../hooks/useSearchEngines';
-// import { parseBookmarkHTML, generateBookmarkHTML } from '../utils/bookmarkUtils';
 import { useWallpaper } from '../hooks/useWallpaper';
 import { Header } from '../components/Header';
 import { SearchSection } from '../components/SearchSection';
-import { MobileFilterSection } from '../components/MobileFilterSection';
 import { BookmarkGrid } from '../components/BookmarkGrid';
 import { RecentBookmarks } from '../components/RecentBookmarks';
-import { BottomNav } from '../components/BottomNav';
 import { BookmarkModal } from '../components/BookmarkModal';
 import { ShortcutModal } from '../components/ShortcutModal';
 import { Clock } from '../components/Clock';
@@ -26,7 +23,7 @@ function HomePage() {
   const { theme, toggleTheme } = useTheme();
   const { bookmarks, shortcuts, addBookmark, updateBookmark, deleteBookmark, importBookmarks, addShortcut, deleteShortcut, updateShortcut } = useBookmarks();
   const { engines, importEngines } = useSearchEngines();
-  const { wallpaper, fetchNewWallpaper, loading } = useWallpaper();
+  const { wallpaper, fetchNewWallpaper } = useWallpaper();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBookmark, setEditingBookmark] = useState(null);
@@ -40,16 +37,12 @@ function HomePage() {
   const [showFilters, setShowFilters] = useState(false);
 
   // Username State
-  const [username, setUsername] = useState(() => {
+  const [username] = useState(() => {
     if (typeof localStorage !== 'undefined') {
       return localStorage.getItem('username') || 'User';
     }
     return 'User';
   });
-
-  useEffect(() => {
-    localStorage.setItem('username', username);
-  }, [username]);
 
   // Wallpaper Visibility State
   const [isWallpaperVisible, setIsWallpaperVisible] = useState(() => {
@@ -88,7 +81,7 @@ function HomePage() {
   const toggleFolder = (folder) => {
     setExpandedFolders((prev) => ({
       ...prev,
-      [folder]: !prev[folder],
+      [folder]: prev[folder] === undefined ? false : !prev[folder],
     }));
   };
 
@@ -108,17 +101,6 @@ function HomePage() {
     };
     reader.readAsText(file);
     event.target.value = '';
-  };
-
-  const handleExport = () => {
-    const html = generateBookmarkHTML(bookmarks, shortcuts, engines);
-    const blob = new Blob([html], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'bookmarks.html';
-    a.click();
-    URL.revokeObjectURL(url);
   };
 
   const openAddModal = () => {

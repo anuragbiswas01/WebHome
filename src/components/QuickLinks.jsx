@@ -1,15 +1,7 @@
 import { useState } from 'react';
-import { Plus, X, Globe, MoreVertical, Edit2, Trash2 } from 'lucide-react';
+import { Plus, MoreVertical, Edit2, Trash2 } from 'lucide-react';
 
 export function QuickLinks({ shortcuts, onAdd, onDelete, onEdit }) {
-    const getDomain = (url) => {
-        try {
-            return new URL(url).hostname.replace('www.', '');
-        } catch {
-            return url;
-        }
-    };
-
     const getFavicon = (url) => {
         try {
             const domain = new URL(url).hostname;

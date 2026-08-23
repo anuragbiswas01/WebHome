@@ -28,8 +28,11 @@ export function useSearchEngines() {
 
   useEffect(() => {
     // Strip icons before saving to avoid React Element serialization issues
-    // We create a clean copy where 'icon' is removed
-    const toSave = engines.map(({ icon, ...rest }) => rest);
+    const toSave = engines.map(eng => {
+      const copy = { ...eng };
+      delete copy.icon;
+      return copy;
+    });
     localStorage.setItem("searchEngines", JSON.stringify(toSave));
   }, [engines]);
 
