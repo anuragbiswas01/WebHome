@@ -26,14 +26,15 @@ export const isFirebaseConfigured = Boolean(
 );
 
 // Auth provider settings configured via .env
-// Defaults: Google and Guest OFF, Email ON with preset master credentials
 export const authSettings = {
   enableGoogle: import.meta.env.VITE_ENABLE_GOOGLE_AUTH === "true",
   enableGuest: import.meta.env.VITE_ENABLE_GUEST_AUTH === "true",
   enableEmail: import.meta.env.VITE_ENABLE_EMAIL_AUTH !== "false",
-  adminEmail: import.meta.env.VITE_ADMIN_EMAIL || "anuragbiswas1389@gmail.com",
-  adminPassword: import.meta.env.VITE_ADMIN_PASSWORD || "anuraG1389",
-  hasAdminCredentials: true,
+  adminEmail: import.meta.env.VITE_ADMIN_EMAIL || "",
+  adminPassword: import.meta.env.VITE_ADMIN_PASSWORD || "",
+  hasAdminCredentials: Boolean(
+    import.meta.env.VITE_ADMIN_EMAIL && import.meta.env.VITE_ADMIN_PASSWORD
+  ),
 };
 
 let app = null;
