@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useClockSettings } from '../hooks/useClockSettings';
 
 export function Clock({ hasWallpaper }) {
     const [time, setTime] = useState(new Date());
+    const { showClock, clockFormat } = useClockSettings();
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -10,8 +12,15 @@ export function Clock({ hasWallpaper }) {
         return () => clearInterval(timer);
     }, []);
 
+    if (!showClock) {
+        return null;
+    }
+
     const formatTime = (date) => {
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        if (clockFormat === '24h') {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        }
+        return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
     };
 
     const formatDate = (date) => {

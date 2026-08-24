@@ -26,12 +26,14 @@ import {
   ChevronUp,
   Mail,
   Lock,
+  Clock as ClockIcon,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { useSearchEngines } from '../hooks/useSearchEngines';
 import { useTheme } from '../hooks/useTheme';
 import { useWallpaper } from '../hooks/useWallpaper';
+import { useClockSettings } from '../hooks/useClockSettings';
 import { parseBookmarkHTML, generateBookmarkHTML } from '../hooks/useBookmarks';
 
 export const Route = createFileRoute('/settings')({
@@ -88,6 +90,7 @@ function SettingsPage() {
 
   const { engines, addEngine, deleteEngine, importEngines, resetEngines } = useSearchEngines();
   const { wallpaper } = useWallpaper();
+  const { showClock, clockFormat, toggleShowClock, setFormat: setClockFormat } = useClockSettings();
 
   const [username, setUsername] = useState(() => {
     if (typeof localStorage !== 'undefined') {
@@ -705,6 +708,69 @@ function SettingsPage() {
                 )}
               </button>
             </div>
+          </div>
+
+          {/* ======================================================== */}
+          {/* Section: Clock & Display */}
+          {/* ======================================================== */}
+          <div className="bg-bg-card rounded-2xl p-6 shadow-sm border border-gray-100/50 space-y-5">
+            <div className="flex items-center gap-2 text-primary-orange font-medium text-sm uppercase tracking-wider">
+              <ClockIcon className="w-4 h-4" />
+              Clock &amp; Header
+            </div>
+
+            {/* Toggle Show/Hide Clock */}
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-text-primary font-medium">Show Clock</span>
+                <p className="text-xs text-text-muted">Display digital clock and date on the dashboard</p>
+              </div>
+              <button
+                onClick={toggleShowClock}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  showClock ? 'bg-primary-orange' : 'bg-bg-input'
+                }`}
+                title={showClock ? 'Hide Clock' : 'Show Clock'}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    showClock ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Clock Format Selection */}
+            {showClock && (
+              <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+                <div>
+                  <span className="text-text-primary font-medium">Time Format</span>
+                  <p className="text-xs text-text-muted">Choose 12-hour (1:30 PM) or 24-hour (13:30) format</p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setClockFormat('12h')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                      clockFormat === '12h'
+                        ? 'bg-primary-orange text-white shadow-orange'
+                        : 'bg-bg-input text-text-secondary hover:bg-gray-200 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    12-Hour (AM/PM)
+                  </button>
+                  <button
+                    onClick={() => setClockFormat('24h')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                      clockFormat === '24h'
+                        ? 'bg-primary-orange text-white shadow-orange'
+                        : 'bg-bg-input text-text-secondary hover:bg-gray-200 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    24-Hour
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ======================================================== */}
