@@ -1,4 +1,4 @@
-import { Settings, Image } from 'lucide-react';
+import { Settings, Image, LayoutGrid, List, Star, Folder, Layers, Filter } from 'lucide-react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
 import { useTheme } from '../hooks/useTheme';
@@ -10,6 +10,7 @@ import { SearchSection } from '../components/SearchSection';
 import { BookmarkGrid } from '../components/BookmarkGrid';
 import { RecentBookmarks } from '../components/RecentBookmarks';
 import { BookmarkModal } from '../components/BookmarkModal';
+import { BookmarkDetailsModal } from '../components/BookmarkDetailsModal';
 import { ShortcutModal } from '../components/ShortcutModal';
 import { Clock } from '../components/Clock';
 import { Stats } from '../components/Stats';
@@ -21,12 +22,15 @@ export const Route = createFileRoute('/')({
 function HomePage() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
-  const { bookmarks, shortcuts, addBookmark, updateBookmark, deleteBookmark, importBookmarks, addShortcut, deleteShortcut, updateShortcut } = useBookmarks();
+  const { bookmarks, shortcuts, addBookmark, updateBookmark, deleteBookmark, toggleStarBookmark, importBookmarks, addShortcut, deleteShortcut, updateShortcut } = useBookmarks();
   const { engines, importEngines } = useSearchEngines();
   const { wallpaper, fetchNewWallpaper } = useWallpaper();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBookmark, setEditingBookmark] = useState(null);
+
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedBookmarkForDetails, setSelectedBookmarkForDetails] = useState(null);
 
   const [isShortcutModalOpen, setIsShortcutModalOpen] = useState(false);
   const [editingShortcut, setEditingShortcut] = useState(null);
@@ -35,6 +39,18 @@ function HomePage() {
   const [selectedEngineId, setSelectedEngineId] = useState('google');
   const [expandedFolders, setExpandedFolders] = useState({});
   const [showFilters, setShowFilters] = useState(false);
+
+  // Bookmark View mode: 'card' | 'row'
+  const [bookmarkView, setBookmarkView] = useState(() => {
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem('webhome_bookmark_view') || 'row';
+    }
+    return 'row';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('webhome_bookmark_view', bookmarkView);
+  }, [bookmarkView]);
 
   // Username State
   const [username] = useState(() => {
@@ -59,6 +75,7 @@ function HomePage() {
 
   // Derived State
   const folders = [...new Set(bookmarks.map((b) => b.folder || 'Uncategorized'))];
+  const starredBookmarks = bookmarks.filter((b) => b.starred);
 
   const filteredBookmarks = bookmarks.filter((b) => {
     const matchesSearch =
@@ -66,8 +83,10 @@ function HomePage() {
       b.url.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (b.folder || '').toLowerCase().includes(searchTerm.toLowerCase());
 
-    if (activeFilter === 'all') return matchesSearch;
-    return matchesSearch && (b.folder || 'Uncategorized') === activeFilter;
+    if (!matchesSearch) return false;
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'starred') return !!b.starred;
+    return (b.folder || 'Uncategorized') === activeFilter;
   });
 
   const groupedBookmarks = filteredBookmarks.reduce((acc, bookmark) => {
@@ -83,6 +102,16 @@ function HomePage() {
       ...prev,
       [folder]: prev[folder] === undefined ? false : !prev[folder],
     }));
+  };
+
+  const handleOpenDetails = (bookmark) => {
+    setSelectedBookmarkForDetails(bookmark);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleUpdateFolder = (bookmarkId, newFolder) => {
+    updateBookmark(bookmarkId, { folder: newFolder });
+    setSelectedBookmarkForDetails((prev) => (prev && prev.id === bookmarkId ? { ...prev, folder: newFolder } : prev));
   };
 
   const handleImport = (event) => {
@@ -148,7 +177,7 @@ function HomePage() {
       />
 
       {/* Desktop Clock Position - Aligned with Stats (Top Right) */}
-      <div className="hidden lg:block absolute top-8 right-16 z-20">
+      <div className="hidden lg:flex absolute top-6 right-16 z-20 flex-col items-end justify-center">
         <Clock theme={theme} hasWallpaper={!!activeWallpaper} />
       </div>
 
@@ -174,7 +203,7 @@ function HomePage() {
       </div>
 
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Header - Repositioned for Desktop to Bottom Right or Minimal */}
+        {/* Header - Mobile only */}
         <div className="lg:hidden">
           <Header
             theme={theme}
@@ -187,14 +216,17 @@ function HomePage() {
           />
         </div>
 
-        {/* Mobile Clock (Original Position) */}
+        {/* Mobile Clock */}
         <div className="lg:hidden">
           <Clock theme={theme} hasWallpaper={!!activeWallpaper} />
         </div>
 
-        <main className="flex-1 flex flex-col items-center justify-center w-full px-5 lg:px-12 pt-10 pb-20 lg:py-0">
+        {/* Desktop spacer to push content below the top Stats / Clock bar */}
+        <div className="hidden lg:block h-28 shrink-0" />
 
-          <div className="w-full max-w-4xl mx-auto space-y-8 lg:space-y-12">
+        <main className="flex-1 flex flex-col items-center justify-start lg:justify-center w-full px-4 sm:px-5 lg:px-12 pt-0 pb-16 lg:pb-24">
+
+          <div className="w-full max-w-4xl mx-auto space-y-4 sm:space-y-6 lg:space-y-12">
             <SearchSection
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
@@ -219,9 +251,9 @@ function HomePage() {
             />
 
             {/* Bookmarks Section */}
-            <div className="bg-bg-card/30 backdrop-blur-md rounded-3xl p-5 lg:p-8 border border-white/10 shadow-float">
+            <div className="w-full space-y-4">
               {/* Section Header */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-3">
                   <h2 className="text-lg lg:text-xl font-bold text-text-primary">Bookmarks</h2>
                   <span className="px-2.5 py-0.5 rounded-full bg-primary-orange/20 text-primary-orange text-xs font-semibold">
@@ -229,15 +261,40 @@ function HomePage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
+                  {/* View Mode Toggle: Row vs Card */}
+                  <div className="flex items-center p-0.5 bg-bg-card/70 backdrop-blur-md rounded-xl border border-white/10 shadow-xs">
+                    <button
+                      onClick={() => setBookmarkView('row')}
+                      className={`p-1.5 rounded-lg transition-all ${bookmarkView === 'row'
+                        ? 'bg-primary-orange text-white shadow-xs'
+                        : 'text-text-secondary hover:text-text-primary'
+                        }`}
+                      title="Row View (List)"
+                    >
+                      <List className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setBookmarkView('card')}
+                      className={`p-1.5 rounded-lg transition-all ${bookmarkView === 'card'
+                        ? 'bg-primary-orange text-white shadow-xs'
+                        : 'text-text-secondary hover:text-text-primary'
+                        }`}
+                      title="Card View (Grid)"
+                    >
+                      <LayoutGrid className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Filter Toggle */}
                   <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className={`p-2 rounded-xl transition-all ${showFilters ? 'bg-primary-orange text-white' : 'bg-bg-input text-text-secondary hover:bg-bg-card'}`}
+                    className={`p-2 rounded-xl transition-all ${showFilters ? 'bg-primary-orange text-white shadow-orange' : 'bg-bg-card/70 backdrop-blur-md text-text-secondary hover:bg-bg-card shadow-sm border border-white/10'}`}
                     title={showFilters ? "Hide Filters" : "Show Filters"}
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                    </svg>
+                    <Filter className="w-4 h-4" />
                   </button>
+
+                  {/* Add Bookmark */}
                   <button
                     onClick={openAddModal}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-primary-orange text-white text-sm font-semibold shadow-orange hover:shadow-lg transition-all"
@@ -250,30 +307,73 @@ function HomePage() {
                 </div>
               </div>
 
-              {/* Filter Pills */}
+              {/* Filter Cards Grid */}
               {showFilters && (
-                <div className="flex overflow-x-auto gap-2 pb-4 no-scrollbar snap-x animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                  {/* All Card */}
                   <button
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all shrink-0 ${activeFilter === 'all'
-                      ? 'bg-primary-orange text-white shadow-orange'
-                      : 'bg-bg-card text-text-secondary shadow-sm hover:bg-bg-input'
-                      }`}
                     onClick={() => setActiveFilter('all')}
+                    className={`flex items-center justify-between p-3 rounded-2xl transition-all border text-left shadow-xs ${activeFilter === 'all'
+                      ? 'bg-primary-orange text-white border-primary-orange shadow-orange/30'
+                      : 'bg-bg-card/80 hover:bg-bg-card backdrop-blur-md border-gray-200/60 dark:border-white/10 text-text-primary'
+                      }`}
                   >
-                    All <span className="opacity-75 text-xs">({bookmarks.length})</span>
+                    <div className="flex items-center gap-2.5 truncate">
+                      <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${activeFilter === 'all' ? 'bg-white/20' : 'bg-primary-orange/15 text-primary-orange'}`}>
+                        <Layers className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="text-xs font-semibold truncate">All</span>
+                    </div>
+                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${activeFilter === 'all' ? 'bg-white/25 text-white' : 'bg-bg-input text-text-secondary'}`}>
+                      {bookmarks.length}
+                    </span>
                   </button>
-                  {folders.map((folder) => (
-                    <button
-                      key={folder}
-                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all shrink-0 ${activeFilter === folder
-                        ? 'bg-primary-orange text-white shadow-orange'
-                        : 'bg-bg-card text-text-secondary shadow-sm hover:bg-bg-input'
-                        }`}
-                      onClick={() => setActiveFilter(folder)}
-                    >
-                      {folder}
-                    </button>
-                  ))}
+
+                  {/* Starred Card */}
+                  <button
+                    onClick={() => setActiveFilter('starred')}
+                    className={`flex items-center justify-between p-3 rounded-2xl transition-all border text-left shadow-xs ${activeFilter === 'starred'
+                      ? 'bg-amber-500 text-white border-amber-500 shadow-amber-500/30'
+                      : 'bg-bg-card/80 hover:bg-bg-card backdrop-blur-md border-gray-200/60 dark:border-white/10 text-text-primary'
+                      }`}
+                  >
+                    <div className="flex items-center gap-2.5 truncate">
+                      <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${activeFilter === 'starred' ? 'bg-white/20' : 'bg-amber-400/15 text-amber-500'}`}>
+                        <Star className={`w-3.5 h-3.5 ${activeFilter === 'starred' ? 'fill-white' : 'fill-amber-400'}`} />
+                      </div>
+                      <span className="text-xs font-semibold truncate">Starred</span>
+                    </div>
+                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${activeFilter === 'starred' ? 'bg-white/25 text-white' : 'bg-bg-input text-text-secondary'}`}>
+                      {starredBookmarks.length}
+                    </span>
+                  </button>
+
+                  {/* Folder Cards */}
+                  {folders.map((folder) => {
+                    const count = bookmarks.filter((b) => (b.folder || 'Uncategorized') === folder).length;
+                    const isActive = activeFilter === folder;
+
+                    return (
+                      <button
+                        key={folder}
+                        onClick={() => setActiveFilter(folder)}
+                        className={`flex items-center justify-between p-3 rounded-2xl transition-all border text-left shadow-xs ${isActive
+                          ? 'bg-primary-orange text-white border-primary-orange shadow-orange/30'
+                          : 'bg-bg-card/80 hover:bg-bg-card backdrop-blur-md border-gray-200/60 dark:border-white/10 text-text-primary'
+                          }`}
+                      >
+                        <div className="flex items-center gap-2.5 truncate">
+                          <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${isActive ? 'bg-white/20' : 'bg-bg-input text-primary-orange'}`}>
+                            <Folder className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="text-xs font-semibold truncate">{folder}</span>
+                        </div>
+                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${isActive ? 'bg-white/25 text-white' : 'bg-bg-input text-text-secondary'}`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
 
@@ -282,8 +382,9 @@ function HomePage() {
                 groupedBookmarks={groupedBookmarks}
                 expandedFolders={expandedFolders}
                 toggleFolder={toggleFolder}
-                onEdit={openEditModal}
-                onDelete={deleteBookmark}
+                viewMode={bookmarkView}
+                onOpenDetails={handleOpenDetails}
+                onToggleStar={toggleStarBookmark}
                 onAdd={openAddModal}
                 onImport={handleImport}
               />
@@ -294,6 +395,17 @@ function HomePage() {
             )}
           </div>
         </main>
+
+        <BookmarkDetailsModal
+          isOpen={isDetailsModalOpen}
+          onClose={() => setIsDetailsModalOpen(false)}
+          bookmark={selectedBookmarkForDetails}
+          availableFolders={[...new Set(bookmarks.map((b) => b.folder).filter(Boolean))]}
+          onToggleStar={toggleStarBookmark}
+          onEdit={openEditModal}
+          onDelete={deleteBookmark}
+          onUpdateFolder={handleUpdateFolder}
+        />
 
         <BookmarkModal
           isOpen={isModalOpen}

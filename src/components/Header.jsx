@@ -14,7 +14,7 @@ export function Header({
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
-        <header className="px-5 pt-5 pb-3 lg:px-12 lg:pt-6 lg:pb-4">
+        <header className="px-4 pt-3 pb-1 sm:px-5 sm:pt-4 sm:pb-2 lg:px-12 lg:pt-6 lg:pb-4">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
                 {/* Mobile Sync Indicator */}
                 <button

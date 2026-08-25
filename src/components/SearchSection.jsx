@@ -54,8 +54,8 @@ export function SearchSection({
     };
 
     return (
-        <div className="relative w-full z-40 mb-8 lg:mb-12">
-            <div className="flex flex-col items-center gap-6 max-w-4xl mx-auto px-4">
+        <div className="relative w-full z-40 mb-5 sm:mb-6 lg:mb-12">
+            <div className="flex flex-col items-center gap-3 sm:gap-4 lg:gap-6 max-w-4xl mx-auto px-2 sm:px-4">
 
                 {/* Independent Search Pill */}
                 <div className={`relative w-full max-w-2xl transition-all duration-300 z-50 ${hasWallpaper ? 'brightness-100' : ''}`}>

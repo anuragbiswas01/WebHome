@@ -30,11 +30,11 @@ export function Clock({ hasWallpaper }) {
     const textColorClass = hasWallpaper ? 'text-white drop-shadow-lg' : 'text-text-primary';
 
     return (
-        <div className="flex flex-col items-center justify-center py-8 select-none">
-            <h1 className={`text-6xl lg:text-8xl font-bold tracking-tight mb-2 transition-colors duration-300 ${textColorClass}`}>
+        <div className="flex flex-col items-center justify-center pt-1 pb-3 sm:pt-2 sm:pb-4 lg:py-8 select-none">
+            <h1 className={`text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight mb-1 lg:mb-2 transition-colors duration-300 ${textColorClass}`}>
                 {formatTime(time)}
             </h1>
-            <p className={`text-lg lg:text-2xl font-medium opacity-90 transition-colors duration-300 ${textColorClass}`}>
+            <p className={`text-base sm:text-lg lg:text-2xl font-medium opacity-90 transition-colors duration-300 ${textColorClass}`}>
                 {formatDate(time)}
             </p>
         </div>

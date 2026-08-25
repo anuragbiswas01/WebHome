@@ -348,6 +348,17 @@ export function BookmarksProvider({ children }) {
     [triggerAutoSync]
   );
 
+  const toggleStarBookmark = useCallback(
+    (id) => {
+      setBookmarks((prev) => {
+        const next = prev.map((b) => (b.id === id ? { ...b, starred: !b.starred } : b));
+        triggerAutoSync(next, shortcutsRef.current);
+        return next;
+      });
+    },
+    [triggerAutoSync]
+  );
+
   const updateShortcut = useCallback(
     (id, updatedData) => {
       setShortcuts((prev) => {
@@ -463,6 +474,7 @@ export function BookmarksProvider({ children }) {
     addBookmark,
     addShortcut,
     updateBookmark,
+    toggleStarBookmark,
     updateShortcut,
     deleteBookmark,
     deleteShortcut,

@@ -18,7 +18,7 @@ export function Stats({ theme, toggleTheme, username }) {
     const displayName = user?.displayName || username || 'User';
 
     return (
-        <div className="hidden lg:flex gap-4 absolute top-8 left-12 z-20 text-white select-none items-center">
+        <div className="hidden lg:flex gap-4 absolute top-6 left-12 z-20 text-text-primary select-none items-center">
             {user?.photoURL ? (
                 <img
                     src={user.photoURL}
