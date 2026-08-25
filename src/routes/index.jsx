@@ -161,13 +161,17 @@ function HomePage() {
   const activeWallpaper = isWallpaperVisible ? wallpaper : null;
 
   return (
-    <div
-      className="min-h-screen flex flex-col relative overflow-x-hidden transition-all duration-500 ease-in-out bg-cover bg-center bg-fixed bg-no-repeat"
-      style={{
-        backgroundImage: activeWallpaper ? `url(${activeWallpaper})` : undefined
-      }}
-    >
-      <div className={`absolute inset-0 z-0 pointer-events-none transition-opacity duration-300 ${activeWallpaper ? 'bg-black/10' : ''}`} />
+    <div className="min-h-screen flex flex-col relative overflow-x-hidden">
+      {/* Fixed Hardware-Accelerated Background Layer (Zero Scroll Jitter) */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none bg-cover bg-center bg-no-repeat transition-all duration-500 ease-in-out"
+        style={{
+          backgroundImage: activeWallpaper ? `url(${activeWallpaper})` : undefined,
+          backgroundColor: !activeWallpaper ? 'var(--color-bg-solid)' : undefined,
+        }}
+      >
+        <div className={`absolute inset-0 transition-opacity duration-300 ${activeWallpaper ? 'bg-black/10' : ''}`} />
+      </div>
 
       {/* Desktop Specific Elements */}
       <Stats

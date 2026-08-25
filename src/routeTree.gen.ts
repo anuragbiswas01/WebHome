@@ -11,6 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SettingsIndexRouteImport } from './routes/settings/index'
+import { Route as SettingsSyncRouteImport } from './routes/settings/sync'
+import { Route as SettingsSearchRouteImport } from './routes/settings/search'
+import { Route as SettingsProfileRouteImport } from './routes/settings/profile'
+import { Route as SettingsDataRouteImport } from './routes/settings/data'
+import { Route as SettingsClockRouteImport } from './routes/settings/clock'
+import { Route as SettingsAppearanceRouteImport } from './routes/settings/appearance'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -22,31 +29,113 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsSyncRoute = SettingsSyncRouteImport.update({
+  id: '/sync',
+  path: '/sync',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsSearchRoute = SettingsSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsProfileRoute = SettingsProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsDataRoute = SettingsDataRouteImport.update({
+  id: '/data',
+  path: '/data',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsClockRoute = SettingsClockRouteImport.update({
+  id: '/clock',
+  path: '/clock',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsAppearanceRoute = SettingsAppearanceRouteImport.update({
+  id: '/appearance',
+  path: '/appearance',
+  getParentRoute: () => SettingsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/settings': typeof SettingsRoute
+  '/settings': typeof SettingsRouteWithChildren
+  '/settings/appearance': typeof SettingsAppearanceRoute
+  '/settings/clock': typeof SettingsClockRoute
+  '/settings/data': typeof SettingsDataRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/search': typeof SettingsSearchRoute
+  '/settings/sync': typeof SettingsSyncRoute
+  '/settings/': typeof SettingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/settings': typeof SettingsRoute
+  '/settings/appearance': typeof SettingsAppearanceRoute
+  '/settings/clock': typeof SettingsClockRoute
+  '/settings/data': typeof SettingsDataRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/search': typeof SettingsSearchRoute
+  '/settings/sync': typeof SettingsSyncRoute
+  '/settings': typeof SettingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/settings': typeof SettingsRoute
+  '/settings': typeof SettingsRouteWithChildren
+  '/settings/appearance': typeof SettingsAppearanceRoute
+  '/settings/clock': typeof SettingsClockRoute
+  '/settings/data': typeof SettingsDataRoute
+  '/settings/profile': typeof SettingsProfileRoute
+  '/settings/search': typeof SettingsSearchRoute
+  '/settings/sync': typeof SettingsSyncRoute
+  '/settings/': typeof SettingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/settings'
+  fullPaths:
+    | '/'
+    | '/settings'
+    | '/settings/appearance'
+    | '/settings/clock'
+    | '/settings/data'
+    | '/settings/profile'
+    | '/settings/search'
+    | '/settings/sync'
+    | '/settings/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/settings'
-  id: '__root__' | '/' | '/settings'
+  to:
+    | '/'
+    | '/settings/appearance'
+    | '/settings/clock'
+    | '/settings/data'
+    | '/settings/profile'
+    | '/settings/search'
+    | '/settings/sync'
+    | '/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/settings'
+    | '/settings/appearance'
+    | '/settings/clock'
+    | '/settings/data'
+    | '/settings/profile'
+    | '/settings/search'
+    | '/settings/sync'
+    | '/settings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  SettingsRoute: typeof SettingsRoute
+  SettingsRoute: typeof SettingsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +154,85 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings/': {
+      id: '/settings/'
+      path: '/'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof SettingsIndexRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/sync': {
+      id: '/settings/sync'
+      path: '/sync'
+      fullPath: '/settings/sync'
+      preLoaderRoute: typeof SettingsSyncRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/search': {
+      id: '/settings/search'
+      path: '/search'
+      fullPath: '/settings/search'
+      preLoaderRoute: typeof SettingsSearchRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/profile': {
+      id: '/settings/profile'
+      path: '/profile'
+      fullPath: '/settings/profile'
+      preLoaderRoute: typeof SettingsProfileRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/data': {
+      id: '/settings/data'
+      path: '/data'
+      fullPath: '/settings/data'
+      preLoaderRoute: typeof SettingsDataRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/clock': {
+      id: '/settings/clock'
+      path: '/clock'
+      fullPath: '/settings/clock'
+      preLoaderRoute: typeof SettingsClockRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/appearance': {
+      id: '/settings/appearance'
+      path: '/appearance'
+      fullPath: '/settings/appearance'
+      preLoaderRoute: typeof SettingsAppearanceRouteImport
+      parentRoute: typeof SettingsRoute
+    }
   }
 }
 
+interface SettingsRouteChildren {
+  SettingsAppearanceRoute: typeof SettingsAppearanceRoute
+  SettingsClockRoute: typeof SettingsClockRoute
+  SettingsDataRoute: typeof SettingsDataRoute
+  SettingsProfileRoute: typeof SettingsProfileRoute
+  SettingsSearchRoute: typeof SettingsSearchRoute
+  SettingsSyncRoute: typeof SettingsSyncRoute
+  SettingsIndexRoute: typeof SettingsIndexRoute
+}
+
+const SettingsRouteChildren: SettingsRouteChildren = {
+  SettingsAppearanceRoute: SettingsAppearanceRoute,
+  SettingsClockRoute: SettingsClockRoute,
+  SettingsDataRoute: SettingsDataRoute,
+  SettingsProfileRoute: SettingsProfileRoute,
+  SettingsSearchRoute: SettingsSearchRoute,
+  SettingsSyncRoute: SettingsSyncRoute,
+  SettingsIndexRoute: SettingsIndexRoute,
+}
+
+const SettingsRouteWithChildren = SettingsRoute._addFileChildren(
+  SettingsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  SettingsRoute: SettingsRoute,
+  SettingsRoute: SettingsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
