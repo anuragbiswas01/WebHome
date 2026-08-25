@@ -22,21 +22,21 @@
 /* Dark Mode Overrides */
 /* Dark Mode Overrides - Polished */
 :root.dark {
-  /* Rich darker background palette */
-  --color-bg-solid: #000000ff;
-  --color-bg-card: #303030ff;
-  --color-bg-input: #2a2a2a;
+  /* Rich pure black background palette */
+  --color-bg-solid: #000000;
+  --color-bg-card: #181818;
+  --color-bg-input: #121212;
   --color-text-primary: #ffffff;
   --color-text-secondary: #a0a0a0;
   --color-text-muted: #666666;
 
   /* Lighter, clearer accents for dark mode */
-  --color-primary-orange: #f86d52ff; /* Lighter Orange for visibility */
+  --color-primary-orange: #f86d52; /* Lighter Orange for visibility */
   --color-primary-orange-hover: #fb923c;
   --color-primary-orange-light: rgba(253, 186, 116, 0.2);
-  --color-accent-teal: #5e7ceaff;
+  --color-accent-teal: #5e7cea;
   --color-accent-teal-light: rgba(94, 234, 212, 0.2);
-  --color-accent-coral: #9926dcff;
+  --color-accent-coral: #9926dc;
   --color-accent-coral-light: rgba(252, 165, 165, 0.2);
   --color-accent-yellow: #fde047;
   --color-accent-purple: #d8b4fe;
@@ -58,15 +58,16 @@
       sans-serif;
     background: linear-gradient(
       180deg,
-      #f9f9f9ff 0%,
-      #f4e1c3ff 50%,
-      #fce3bcff 100%
+      #f9f9f9 0%,
+      #f4e1c3 50%,
+      #fce3bc 100%
     );
     min-height: 100vh;
   }
 
+  :root.dark,
   :root.dark body {
-    background: linear-gradient(180deg, #121212 0%, #000000 100%);
+    background: #000000;
   }
 
   html,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 function ShortcutModalForm({ onClose, onSave, initialData }) {
@@ -30,7 +30,7 @@ function ShortcutModalForm({ onClose, onSave, initialData }) {
 
     return (
         <div
-            className="w-full lg:max-w-md bg-bg-card rounded-t-3xl lg:rounded-2xl shadow-float"
+            className="w-full max-w-md bg-bg-card rounded-3xl shadow-2xl border border-white/10 overflow-hidden animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
         >
             {/* Header */}
@@ -94,11 +94,21 @@ function ShortcutModalForm({ onClose, onSave, initialData }) {
 }
 
 export function ShortcutModal({ isOpen, onClose, onSave, initialData }) {
+    // Prevent background scrolling while modal is open
+    useEffect(() => {
+        if (!isOpen) return;
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = originalOverflow || 'unset';
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     return (
         <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-end lg:items-center justify-center p-0 lg:p-4 z-100"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200"
             onClick={onClose}
         >
             <ShortcutModalForm

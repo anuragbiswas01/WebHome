@@ -22,6 +22,18 @@ export function useTheme() {
       root.classList.remove("dark");
     }
     localStorage.setItem("theme", theme);
+
+    // Update Chrome browser top navigation / status bar theme color
+    const themeColor = theme === "dark" ? "#000000" : "#faf6f1";
+    let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute("content", themeColor);
+    } else {
+      metaThemeColor = document.createElement("meta");
+      metaThemeColor.name = "theme-color";
+      metaThemeColor.content = themeColor;
+      document.head.appendChild(metaThemeColor);
+    }
   }, [theme]);
 
   const toggleTheme = () => {

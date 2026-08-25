@@ -101,7 +101,7 @@ export function BookmarkGrid({
                                 {items.map((bookmark) => (
                                     <div
                                         key={bookmark.id}
-                                        className="group relative flex flex-col justify-between p-3.5 sm:p-4 rounded-2xl bg-bg-card/90 dark:bg-bg-card/90 backdrop-blur-md shadow-sm hover:shadow-md border border-gray-200/60 dark:border-white/10 hover:border-primary-orange/50 transition-all duration-150"
+                                        className="group relative flex flex-col justify-between p-3.5 sm:p-4 rounded-2xl bg-bg-card/90 dark:bg-bg-card/90 backdrop-blur-md shadow-sm hover:shadow-md transition-all duration-150"
                                     >
                                         <div className="flex items-start justify-between gap-2 mb-2">
                                             {/* Favicon Icon */}
@@ -176,7 +176,7 @@ export function BookmarkGrid({
                                 {items.map((bookmark) => (
                                     <div
                                         key={bookmark.id}
-                                        className="group relative flex items-center justify-between px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-bg-card/90 dark:bg-bg-card/90 backdrop-blur-md shadow-sm hover:shadow-md border border-gray-200/60 dark:border-white/10 hover:border-primary-orange/50 transition-all duration-150"
+                                        className="group relative flex items-center justify-between px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-bg-card/90 dark:bg-bg-card/90 backdrop-blur-md shadow-sm hover:shadow-md transition-all duration-150"
                                     >
                                         <a
                                             href={bookmark.url}
