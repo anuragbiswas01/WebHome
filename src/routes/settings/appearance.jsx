@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { ArrowLeft, Sun, Moon, Palette, Check } from 'lucide-react';
+import { ArrowLeft, Sun, Moon, Palette, Check, Type } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
 
 export const Route = createFileRoute('/settings/appearance')({
@@ -7,7 +7,16 @@ export const Route = createFileRoute('/settings/appearance')({
 });
 
 function AppearanceSettingsPage() {
-  const { theme, toggleTheme, primaryColor, setPrimaryColor, PRESET_ACCENT_COLORS } = useTheme();
+  const {
+    theme,
+    toggleTheme,
+    primaryColor,
+    setPrimaryColor,
+    PRESET_ACCENT_COLORS,
+    fontFamily,
+    setFontFamily,
+    PRESET_FONTS,
+  } = useTheme();
 
   return (
     <div className="max-w-2xl mx-auto px-3 sm:px-4 py-6 text-text-primary">
@@ -25,7 +34,7 @@ function AppearanceSettingsPage() {
       </div>
 
       <div className="space-y-4 pb-12">
-        <div className="bg-bg-card rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+        <div className="bg-bg-card rounded-2xl p-4 sm:p-5 shadow-sm space-y-5">
           <div className="flex items-center gap-2 text-accent-purple font-medium text-sm uppercase tracking-wider">
             <Sun className="w-4 h-4" />
             Theme & Style
@@ -53,7 +62,7 @@ function AppearanceSettingsPage() {
           </div>
 
           {/* Primary Accent Color */}
-          <div className="pt-3 border-t border-gray-100 dark:border-gray-800 space-y-2.5">
+          <div className="space-y-2.5 pt-1">
             <div className="flex items-center justify-between">
               <span className="text-text-primary font-medium text-sm">Primary Color</span>
               <span className="text-xs font-mono text-text-muted">{primaryColor?.toUpperCase()}</span>
@@ -78,7 +87,7 @@ function AppearanceSettingsPage() {
 
               {/* Custom Color Input */}
               <label
-                className="w-8 h-8 rounded-full bg-bg-input hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 flex items-center justify-center cursor-pointer transition-transform hover:scale-110 shadow-xs relative"
+                className="w-8 h-8 rounded-full bg-bg-input hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer transition-transform hover:scale-110 shadow-xs relative"
                 title="Pick Custom Color"
               >
                 <Palette className="w-4 h-4 text-text-secondary" />
@@ -89,6 +98,41 @@ function AppearanceSettingsPage() {
                   className="sr-only"
                 />
               </label>
+            </div>
+          </div>
+
+          {/* Typography / Font Selector */}
+          <div className="space-y-2.5 pt-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-text-primary font-medium text-sm">
+                <Type className="w-4 h-4 text-primary-orange" />
+                Typography Font
+              </div>
+              <span className="text-xs text-text-muted">
+                {PRESET_FONTS.find((f) => f.value === fontFamily)?.name || 'Custom'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
+              {PRESET_FONTS.map((font) => {
+                const isSelected = fontFamily === font.value;
+                return (
+                  <button
+                    key={font.name}
+                    type="button"
+                    onClick={() => setFontFamily(font.value)}
+                    style={{ fontFamily: font.value }}
+                    className={`px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-left flex items-center justify-between ${
+                      isSelected
+                        ? 'bg-primary-orange text-white shadow-xs'
+                        : 'bg-bg-input text-text-secondary hover:bg-gray-200 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    <span className="truncate">{font.name}</span>
+                    {isSelected && <Check className="w-3.5 h-3.5 shrink-0 ml-1" />}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

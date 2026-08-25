@@ -11,6 +11,16 @@
       name="description"
       content="A simple bookmark manager that works offline. Import and export Chrome bookmarks, organize by folders, and access anywhere."
     />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Google Fonts for custom typography options -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <script>
       (function () {
         try {
@@ -54,6 +64,11 @@
               root.style.setProperty('--color-primary-orange-hover', hoverColor);
               root.style.setProperty('--color-primary-orange-light', lightColor);
             }
+          }
+
+          var fontFamily = localStorage.getItem('font_family');
+          if (fontFamily) {
+            document.documentElement.style.fontFamily = fontFamily;
           }
         } catch (e) {}
       })();

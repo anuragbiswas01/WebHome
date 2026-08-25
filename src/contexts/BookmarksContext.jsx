@@ -420,6 +420,27 @@ export function BookmarksProvider({ children }) {
     [triggerAutoSync]
   );
 
+  const deduplicateBookmarks = useCallback(() => {
+    const seen = new Set();
+    let removedCount = 0;
+    const cleanBookmarks = [];
+
+    bookmarksRef.current.forEach((b) => {
+      if (!b || !b.url) return;
+      const norm = b.url.trim().toLowerCase().replace(/\/$/, '');
+      if (seen.has(norm)) {
+        removedCount++;
+      } else {
+        seen.add(norm);
+        cleanBookmarks.push(b);
+      }
+    });
+
+    setBookmarks(cleanBookmarks);
+    triggerAutoSync(cleanBookmarks, shortcutsRef.current);
+    return removedCount;
+  }, [triggerAutoSync]);
+
   const resetBookmarks = useCallback(() => {
     setBookmarks([]);
     setShortcuts([]);
@@ -479,6 +500,7 @@ export function BookmarksProvider({ children }) {
     deleteBookmark,
     deleteShortcut,
     importBookmarks,
+    deduplicateBookmarks,
     resetBookmarks,
     syncNow,
     pushLocalToCloud,

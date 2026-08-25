@@ -51,7 +51,7 @@ function ClockSettingsPage() {
 
           {/* Clock Format Selection */}
           {showClock && (
-            <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+            <div className="flex items-center justify-between pt-2">
               <span className="text-text-primary font-medium text-sm">Time Format</span>
               <div className="flex gap-2">
                 <button

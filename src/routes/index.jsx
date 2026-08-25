@@ -237,6 +237,7 @@ function HomePage() {
               activeFilter={activeFilter}
               setActiveFilter={setActiveFilter}
               folders={folders}
+              bookmarks={bookmarks}
               bookmarksCount={bookmarks.length}
               selectedEngineId={selectedEngineId}
               setSelectedEngineId={setSelectedEngineId}

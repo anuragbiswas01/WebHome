@@ -1,0 +1,16 @@
+{
+  "name": "WebHome - Personal Bookmark Dashboard",
+  "short_name": "WebHome",
+  "description": "High-performance encrypted bookmark manager and customizable start page.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

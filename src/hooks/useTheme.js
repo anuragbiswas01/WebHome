@@ -11,6 +11,14 @@ export const PRESET_ACCENT_COLORS = [
   { name: 'Indigo', color: '#6366f1' },
 ];
 
+export const PRESET_FONTS = [
+  { name: 'Inter', value: "'Inter', sans-serif" },
+  { name: 'Plus Jakarta Sans', value: "'Plus Jakarta Sans', sans-serif" },
+  { name: 'Outfit', value: "'Outfit', sans-serif" },
+  { name: 'JetBrains Mono', value: "'JetBrains Mono', monospace" },
+  { name: 'System', value: "system-ui, -apple-system, sans-serif" },
+];
+
 function hexToRgba(hex, alpha = 1) {
   let cleanHex = hex.replace('#', '');
   if (cleanHex.length === 3) {
@@ -63,6 +71,13 @@ export function useTheme() {
     return "#f5a623";
   });
 
+  const [fontFamily, setFontFamily] = useState(() => {
+    if (typeof localStorage !== "undefined" && localStorage.getItem("font_family")) {
+      return localStorage.getItem("font_family");
+    }
+    return "'Inter', sans-serif";
+  });
+
   // Apply Theme Mode (Dark/Light)
   useEffect(() => {
     const root = window.document.documentElement;
@@ -99,6 +114,13 @@ export function useTheme() {
     localStorage.setItem("primary_color", primaryColor);
   }, [primaryColor]);
 
+  // Apply Font Family
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.style.fontFamily = fontFamily;
+    localStorage.setItem("font_family", fontFamily);
+  }, [fontFamily]);
+
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
@@ -108,6 +130,9 @@ export function useTheme() {
     toggleTheme,
     primaryColor,
     setPrimaryColor,
-    PRESET_ACCENT_COLORS
+    PRESET_ACCENT_COLORS,
+    fontFamily,
+    setFontFamily,
+    PRESET_FONTS,
   };
 }

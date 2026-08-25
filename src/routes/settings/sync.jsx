@@ -143,10 +143,10 @@ function SyncSettingsPage() {
       {actionFeedback && (
         <div className="fixed top-6 right-6 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
           <div
-            className={`flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl backdrop-blur-md border ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl backdrop-blur-md ${
               actionFeedback.type === 'error'
-                ? 'bg-red-500/90 text-white border-red-400/30'
-                : 'bg-green-600/90 text-white border-green-400/30'
+                ? 'bg-red-500/90 text-white'
+                : 'bg-green-600/90 text-white'
             }`}
           >
             {actionFeedback.type === 'error' ? (
@@ -232,7 +232,7 @@ function SyncSettingsPage() {
                     <img
                       src={user.photoURL}
                       alt={user.displayName}
-                      className="w-11 h-11 rounded-full border-2 border-primary-orange object-cover shadow-sm"
+                      className="w-11 h-11 rounded-full object-cover shadow-sm"
                     />
                   ) : (
                     <div className="w-11 h-11 rounded-full bg-primary-orange text-white font-bold text-base flex items-center justify-center shadow-orange">
@@ -296,7 +296,7 @@ function SyncSettingsPage() {
               </div>
 
               {/* Advanced Cloud Actions */}
-              <div className="pt-3 border-t border-gray-100 dark:border-gray-800 space-y-2">
+              <div className="pt-2 space-y-2">
                 <div className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
                   Advanced Sync Options
                 </div>
@@ -327,7 +327,7 @@ function SyncSettingsPage() {
 
               {/* Error Banner */}
               {(syncError || authError) && (
-                <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 flex items-center justify-between text-xs text-red-600 dark:text-red-400">
+                <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 flex items-center justify-between text-xs text-red-600 dark:text-red-400">
                   <div className="flex items-center gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0" />
                     <span>{syncError || authError}</span>
@@ -393,7 +393,7 @@ function SyncSettingsPage() {
               {authSettings.enableEmail && (
                 <form
                   onSubmit={handleEmailAuthSubmit}
-                  className="pt-4 border-t border-gray-100 dark:border-gray-800 space-y-3"
+                  className="pt-3 space-y-3"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
@@ -417,7 +417,7 @@ function SyncSettingsPage() {
                         value={authEmail}
                         onChange={(e) => setAuthEmail(e.target.value)}
                         required
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-bg-input border border-transparent focus:border-primary-orange text-sm text-text-primary placeholder:text-text-muted outline-none transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-bg-input text-sm text-text-primary placeholder:text-text-muted outline-none transition-all"
                       />
                     </div>
 
@@ -430,7 +430,7 @@ function SyncSettingsPage() {
                         onChange={(e) => setAuthPassword(e.target.value)}
                         required
                         minLength={6}
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-bg-input border border-transparent focus:border-primary-orange text-sm text-text-primary placeholder:text-text-muted outline-none transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-bg-input text-sm text-text-primary placeholder:text-text-muted outline-none transition-all"
                       />
                     </div>
                   </div>

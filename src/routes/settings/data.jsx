@@ -7,6 +7,8 @@ import {
   Download,
   AlertTriangle,
   CheckCircle2,
+  Sparkles,
+  RefreshCw,
 } from 'lucide-react';
 import { useBookmarks } from '../../hooks/useBookmarks';
 import { useSearchEngines } from '../../hooks/useSearchEngines';
@@ -17,13 +19,14 @@ export const Route = createFileRoute('/settings/data')({
 });
 
 function DataSettingsPage() {
-  const { bookmarks, shortcuts, importBookmarks, resetBookmarks } = useBookmarks();
+  const { bookmarks, shortcuts, importBookmarks, resetBookmarks, deduplicateBookmarks } = useBookmarks();
   const { resetEngines } = useSearchEngines();
 
   const [actionFeedback, setActionFeedback] = useState(null);
+  const [isCleaning, setIsCleaning] = useState(false);
 
-  const showFeedback = (msg) => {
-    setActionFeedback({ msg });
+  const showFeedback = (msg, type = 'success') => {
+    setActionFeedback({ msg, type });
     setTimeout(() => setActionFeedback(null), 3000);
   };
 
@@ -62,12 +65,31 @@ function DataSettingsPage() {
     showFeedback('Bookmarks exported!');
   };
 
+  const handleDeduplicate = () => {
+    setIsCleaning(true);
+    setTimeout(() => {
+      const count = deduplicateBookmarks();
+      setIsCleaning(false);
+      if (count > 0) {
+        showFeedback(`Cleaned ${count} duplicate ${count === 1 ? 'bookmark' : 'bookmarks'}!`);
+      } else {
+        showFeedback('No duplicates found. Bookmarks are clean!');
+      }
+    }, 400);
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-3 sm:px-4 py-6 text-text-primary">
       {/* Floating Action Feedback Notification */}
       {actionFeedback && (
         <div className="fixed top-6 right-6 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl backdrop-blur-md border bg-green-600/90 text-white border-green-400/30">
+          <div
+            className={`flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl backdrop-blur-md border ${
+              actionFeedback.type === 'error'
+                ? 'bg-red-500/90 text-white border-red-400/30'
+                : 'bg-green-600/90 text-white border-green-400/30'
+            }`}
+          >
             <CheckCircle2 className="w-5 h-5 shrink-0" />
             <span className="text-sm font-semibold">{actionFeedback.msg}</span>
           </div>
@@ -118,6 +140,32 @@ function DataSettingsPage() {
                 <Download className="w-4 h-4" />
               </div>
               <div className="font-semibold text-text-primary text-sm">Export Bookmarks</div>
+            </button>
+          </div>
+        </div>
+
+        {/* Database Optimization & Cleaner Card */}
+        <div className="bg-bg-card rounded-2xl p-4 sm:p-5 shadow-sm space-y-3">
+          <div className="flex items-center gap-2 text-primary-orange font-medium text-sm uppercase tracking-wider">
+            <Sparkles className="w-4 h-4" />
+            Library Optimization
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-bg-input">
+            <div>
+              <div className="font-semibold text-text-primary text-sm">Deduplicate & Clean URLs</div>
+              <div className="text-xs text-text-muted">
+                Removes identical URL entries and normalizes trailing slashes.
+              </div>
+            </div>
+
+            <button
+              onClick={handleDeduplicate}
+              disabled={isCleaning || bookmarks.length === 0}
+              className="px-4 py-2.5 bg-primary-orange text-white rounded-xl font-semibold text-xs transition-all shadow-xs hover:shadow-md disabled:opacity-50 flex items-center justify-center gap-2 shrink-0"
+            >
+              {isCleaning ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+              Clean Duplicates
             </button>
           </div>
         </div>
